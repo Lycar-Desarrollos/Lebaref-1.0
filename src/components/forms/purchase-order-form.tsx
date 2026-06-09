@@ -87,7 +87,7 @@ const formatDate = (date: Date) => {
 const billToDefault = `Attn: Lebaref
 LEBAREF SERVICIO DE MANTENIMIENTO GENERAL S.A. DE C.V.
 Calle 33 No. 259 Num int 2 por 12 y 14 Col. Santa María Chuburna CP. 97138, Mérida, Yucatán
-990 101 02 21
+990 101 0387
 corporativo@lebaref.com`;
 
 const defaultValues: POFormValues = {

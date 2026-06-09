@@ -26,7 +26,7 @@ graph TB
     C --> D
     D -->|"Auth SDK"| E
     D -->|"Firestore SDK"| F
-    D -->|"Analytics SDK"| G
+    D -->|"Analytics SDK"| G 
     I --> J
     B -->|"Priorizacion\nde Tickets"| I
 

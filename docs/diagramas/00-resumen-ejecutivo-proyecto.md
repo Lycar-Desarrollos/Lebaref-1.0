@@ -5,7 +5,7 @@
 
 ## Estado General de la Plataforma
 
-```mermaid
+```mermaid 
 graph TD
     PLAT["LEBAREF - STICS Support Hub\nPlataforma de Gestion Empresarial"] --> PUB
     PLAT --> ADMIN
@@ -72,7 +72,7 @@ graph TD
     style ALMACEN fill:#1a1a2e,stroke:#3b82f6,color:#fff
     style HERRAM fill:#1a1a2e,stroke:#3b82f6,color:#fff
     style ADMIN_CTRL fill:#1a1a2e,stroke:#3b82f6,color:#fff
-    style SOPORTE fill:#1a1a2e,stroke:#3b82f6,color:#fff
+    style SOPORTE fill:#1a1a2e,stroke:#3b82f6,color:#fff 
     style SEG fill:#2a1a0f,stroke:#f97316,color:#fff
 ```
 

@@ -270,7 +270,7 @@ const downloadPDF = async (quote: Quote) => {
     const companyInfo = [
         "Calle 33 No. 259 Num int 2 por 12 y 14 Col. Santa María Chuburna CP. 97138, Mérida, Yucatán",
         "",
-        "Oficinas: 990-101-0221",
+        "Oficinas: 990 101 0387",
         "Correo: corporativo@lebaref.com",
         quote.responsable ? `Responsable: ${quote.responsable}` : null,
     ].filter(val => val !== null).join('\n');
