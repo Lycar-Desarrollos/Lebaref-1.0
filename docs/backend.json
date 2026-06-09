@@ -1,0 +1,228 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile in the system.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "userCode": { "type": "string", "description": "A two-digit sequential code for the user (e.g., '01')." },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "employee"] },
+        "permissions": {
+            "type": "object",
+            "properties": {
+                "projects": { "type": "boolean" },
+                "clients": { "type": "boolean" },
+                "quotes": { "type": "boolean" },
+                "purchase_orders": { "type": "boolean" },
+                "suppliers": { "type": "boolean" },
+                "tickets": { "type": "boolean" },
+                "services": { "type": "boolean" },
+                "spare_parts": { "type": "boolean" },
+                "calendar": { "type": "boolean" },
+                "reports": { "type": "boolean" }
+            },
+            "description": "Map of modules the user has access to, e.g. {'projects': true, 'clients': true}"
+        },
+        "quoteCounter": { "type": "number", "description": "The last used number for this user's quotes." },
+        "purchaseOrderCounter": { "type": "number", "description": "The last used number for this user's purchase orders." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "userCode"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Represents a project with tasks, timelines, and costs.",
+      "type": "object",
+      "properties": {
+        "client": { "type": "string", "description": "Name of the client for the project." },
+        "description": { "type": "string", "description": "Detailed description of the project." },
+        "responsible": { "type": "string", "description": "Person in charge of the project." },
+        "status": { "type": "string", "enum": ["Nuevo", "En Progreso", "En Pausa", "Completado"], "description": "Current status of the project." },
+        "programmedDate": { "type": "string", "format": "date", "description": "Scheduled date for the project." },
+        "priority": { "type": "string", "enum": ["Baja", "Media", "Alta"], "description": "Priority level of the project." },
+        "files": { "type": "array", "items": { "type": "string", "format": "uri" }, "description": "List of URLs to project-related files." },
+        "lastUpdated": { "type": "string", "format": "date-time", "description": "Timestamp of the last update." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "quoteId": { "type": "string", "description": "The ID of the linked quote." },
+        "purchaseOrderId": { "type": "string", "description": "The ID of the linked purchase order." },
+        "userId": { "type": "string", "description": "The ID of the user who owns this document." }
+      },
+      "required": ["client", "description", "status", "programmedDate", "priority", "userId"]
+    },
+    "Client": {
+        "title": "Client",
+        "description": "Represents a client of the business.",
+        "type": "object",
+        "properties": {
+            "name": { "type": "string" },
+            "phone": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "address": { "type": "string" },
+            "rfc": { "type": "string" }
+        },
+        "required": ["name", "phone"]
+    },
+     "Supplier": {
+        "title": "Supplier",
+        "description": "Represents a supplier for parts or services.",
+        "type": "object",
+        "properties": {
+            "name": { "type": "string" },
+            "contactPerson": { "type": "string" },
+            "phone": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "address": { "type": "string" },
+            "rfc": { "type": "string" },
+            "creditTime": { "type": "string", "description": "Payment credit time in days (e.g., '30', '60', 'Contado')." }
+        },
+        "required": ["name"]
+    },
+    "PurchaseOrder": {
+      "title": "Purchase Order",
+      "description": "Represents a purchase order sent to a supplier.",
+      "type": "object",
+      "properties": {
+        "purchaseOrderNumber": { "type": "string", "description": "The user-facing sequential ID for the purchase order (e.g., OC01-0001)." },
+        "date": { "type": "string", "format": "date" },
+        "supplierId": { "type": "string", "description": "The ID of the linked supplier." },
+        "supplierName": { "type": "string" },
+        "supplierDetails": { "type": "string", "description": "Full address and contact details of the supplier." },
+        "billToDetails": { "type": "string", "description": "Full address and contact details for billing (usually LEBAREF)." },
+        "quoteId": { "type": "string", "description": "The ID of the linked quote." },
+        "tipoPago": { "type": "string", "description": "El tipo de pago (e.g., 'Contado', 'Crédito')." },
+        "diasCredito": { "type": "string", "description": "Los días de crédito otorgados." },
+        "paymentDueDate": { "type": "string", "format": "date", "description": "The calculated payment due date, which can be manually adjusted." },
+        "items": { "type": "array", "items": { "type": "object", "properties": { "description": {"type": "string"}, "unit": {"type": "string"}, "quantity": {"type": "number"}, "price": {"type": "number"} } } },
+        "observations": { "type": "string" },
+        "discountPercentage": { "type": "number" },
+        "subtotal": { "type": "number" },
+        "iva": { "type": "number" },
+        "total": { "type": "number" },
+        "status": { "type": "string", "enum": ["Borrador", "Enviada", "Recibida Parcialmente", "Recibida"] },
+        "userId": { "type": "string", "description": "The ID of the user who owns this document." }
+      },
+      "required": ["purchaseOrderNumber", "date", "supplierName", "items", "total", "status", "userId"]
+    },
+    "Ticket": {
+        "title": "Service Ticket",
+        "description": "Represents a service request ticket.",
+        "type": "object",
+        "properties": {
+            "ticketNumber": { "type": "number" },
+            "clientName": { "type": "string" },
+            "clientPhone": { "type": "string" },
+            "serviceType": { "type": "string" },
+            "description": { "type": "string" },
+            "status": { "type": "string" },
+            "urgency": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "userId": { "type": "string", "description": "The ID of the user who owns this document." }
+        },
+        "required": ["clientName", "serviceType", "description", "status", "userId"]
+    },
+    "Quote": {
+      "title": "Quote",
+      "description": "Represents a price quote for a client.",
+      "type": "object",
+      "properties": {
+        "quoteNumber": { "type": "string", "description": "The user-facing sequential ID for the quote (e.g., C01-0001)."},
+        "clientId": { "type": "string", "description": "The ID of the linked client." },
+        "clientName": { "type": "string", "description": "The name of the client, can be manually entered or from linked client." },
+        "clientPhone": { "type": "string" },
+        "clientEmail": { "type": "string", "format": "email" },
+        "clientAddress": { "type": "string" },
+        "rfc": { "type": "string" },
+        "total": { "type": "number" },
+        "status": { "type": "string", "enum": ["Borrador", "Enviada", "Aceptada", "Rechazada"] },
+        "date": { "type": "string", "format": "date" },
+        "expirationDate": { "type": "string", "format": "date" },
+        "items": { "type": "array", "items": { "type": "object", "properties": { "description": {"type": "string"}, "quantity": {"type": "number"}, "price": {"type": "number"}, "unidad": {"type": "string"} } } },
+        "observations": { "type": "string" },
+        "policies": { "type": "string" },
+        "paymentTerms": { "type": "string" },
+        "iva": { "type": "number" },
+        "subtotal": { "type": "number" },
+        "linkedTicketId": { "type": "string" },
+        "tipoServicio": { "type": "string" },
+        "tipoTrabajo": { "type": "string" },
+        "equipoLugar": { "type": "string" },
+        "userId": { "type": "string", "description": "The ID of the user who owns this document." }
+      },
+      "required": ["clientName", "clientPhone", "clientAddress", "date", "status", "items", "userId"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "A service offered by the company.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "sku": { "type": "string" },
+        "price": { "type": "number" },
+        "serviceType": { "type": "string", "enum": ["correctivo", "preventivo", "instalacion"] },
+        "description": { "type": "string" }
+      },
+      "required": ["title", "sku", "price", "serviceType"]
+    },
+    "SparePart": {
+      "title": "Spare Part",
+      "description": "A spare part for repairs.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "brand": { "type": "string" },
+        "sku": { "type": "string" },
+        "price": { "type": "number" },
+        "description": { "type": "string" }
+      },
+      "required": ["name", "sku", "price", "brand"]
+    }
+  },
+  "auth": {
+    "providers": ["email"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores user profile information."
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Stores individual project details."
+    },
+    "/tickets/{ticketId}": {
+      "schema": { "$ref": "#/entities/Ticket" },
+      "description": "Stores service tickets."
+    },
+    "/quotes/{quoteId}": {
+      "schema": { "$ref": "#/entities/Quote" },
+      "description": "Stores quotes."
+    },
+     "/purchase_orders/{orderId}": {
+      "schema": { "$ref": "#/entities/PurchaseOrder" },
+      "description": "Stores purchase orders sent to suppliers."
+    },
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/Service" },
+      "description": "Stores available services."
+    },
+    "/spare_parts/{partId}": {
+      "schema": { "$ref": "#/entities/SparePart" },
+      "description": "Stores spare parts inventory."
+    },
+    "/clients/{clientId}": {
+        "schema": { "$ref": "#/entities/Client" },
+        "description": "Stores client information."
+    },
+    "/suppliers/{supplierId}": {
+        "schema": { "$ref": "#/entities/Supplier" },
+        "description": "Stores supplier information."
+    },
+    "/counters/{counterId}": {
+        "schema": { "type": "object", "properties": { "lastNumber": { "type": "number" } } },
+        "description": "Global counters for tickets, users, etc."
+    }
+  }
+}

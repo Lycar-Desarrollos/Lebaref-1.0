@@ -1,0 +1,110 @@
+// Force redeploy of rules
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    function getUserData(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    function isAdmin() {
+      return request.auth != null && getUserData(request.auth.uid).role == 'admin';
+    }
+
+    function hasPermission(module) {
+      let data = getUserData(request.auth.uid);
+      return request.auth != null 
+             && data != null
+             && 'permissions' in data
+             && data.permissions != null
+             && data.permissions[module] == true;
+    }
+    
+    function canRead(module) {
+      return isAdmin() || hasPermission(module);
+    }
+    
+    match /users/{userId} {
+      allow list, write: if isAdmin();
+      allow get: if request.auth.uid == userId;
+      // User can update their own profile, but cannot change their role or userCode.
+      allow update: if request.auth.uid == userId && 
+                   request.resource.data.role == resource.data.role &&
+                   request.resource.data.userCode == resource.data.userCode;
+    }
+    
+    match /projects/{projectId} {
+      allow create: if (hasPermission('projects') || isAdmin()) && request.resource.data.userId == request.auth.uid;
+      allow list: if hasPermission('projects') || hasPermission('calendar') || isAdmin();
+      allow get: if isAdmin() || resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.userId == request.auth.uid;
+    }
+
+    match /tickets/{ticketId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow list: if request.auth != null;
+      allow get: if isAdmin() || resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.userId == request.auth.uid;
+    }
+
+    match /quotes/{quoteId} {
+      allow create: if (hasPermission('quotes') || isAdmin()) && request.resource.data.userId == request.auth.uid;
+      allow list: if hasPermission('quotes') || hasPermission('projects') || hasPermission('reports') || isAdmin();
+      allow get: if isAdmin() || resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.userId == request.auth.uid;
+    }
+    
+    match /purchase_orders/{orderId} {
+      allow create: if (hasPermission('purchase_orders') || isAdmin()) && request.resource.data.userId == request.auth.uid;
+      allow list: if hasPermission('purchase_orders') || hasPermission('projects') || hasPermission('reports') || isAdmin();
+      allow get: if isAdmin() || resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.userId == request.auth.uid;
+    }
+
+    // Publicly readable collections
+    match /services/{docId} {
+      allow read: if true;
+      allow create, update: if isAdmin() || hasPermission('services');
+      allow delete: if isAdmin();
+    }
+     match /services {
+      allow list: if true;
+    }
+
+    match /spare_parts/{docId} {
+      allow read: if true;
+      allow create, update: if isAdmin() || hasPermission('spare_parts');
+      allow delete: if isAdmin();
+    }
+    match /spare_parts {
+      allow list: if true;
+    }
+
+    // Restricted collections
+    match /clients/{docId} {
+      allow read: if canRead('clients') || hasPermission('quotes');
+      allow create, update: if isAdmin() || hasPermission('clients');
+      allow delete: if isAdmin();
+    }
+    match /clients {
+        allow list: if canRead('clients') || hasPermission('quotes');
+    }
+    
+    match /suppliers/{docId} {
+      allow read: if true;
+      allow create, update: if isAdmin() || hasPermission('suppliers');
+      allow delete: if isAdmin();
+    }
+     match /suppliers {
+      allow list: if true;
+    }
+
+    match /counters/{counterId} {
+      allow read, write: if request.auth != null && (
+        (counterId == 'users' && isAdmin()) ||
+        (counterId == 'tickets')
+      );
+    }
+  }
+}

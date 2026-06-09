@@ -1,0 +1,129 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 212 33% 94%;
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 215 49% 31%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 0 0% 3.9%;
+
+    --muted: 214 18% 85%;
+    --muted-foreground: 0 0% 25%;
+
+    --accent: 215 28% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 215 49% 31%;
+
+    --chart-1: 215 49% 31%;
+    --chart-2: 215 28% 48%;
+    --chart-3: 160 60% 45%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 280 65% 60%;
+  }
+
+  .dark {
+    --background: 220 23% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 23% 14%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 23% 14%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 215 49% 31%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 215 28% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 215 49% 31%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Ocultar el ojito nativo del navegador (Chrome/Edge) en campos de contraseña */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
+  input[type="password"]::-webkit-contacts-auto-fill-button,
+  input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+  }
+}
+
+.project-nuevo::after,
+.project-en-progreso::after,
+.project-en-pausa::after,
+.project-completado::after,
+.project-vencido::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+}
+.project-nuevo::after {
+  background-color: hsl(var(--primary));
+}
+.project-completado::after {
+  background-color: hsl(142 71% 45%); /* green */
+}
+.project-en-progreso::after {
+  background-color: hsl(45 93% 47%); /* yellow */
+}
+.project-en-pausa::after {
+  background-color: hsl(28 95% 53%); /* orange */
+}
+.project-vencido::after {
+  background-color: hsl(var(--destructive)); /* red */
+}
+
+@keyframes highlight-bg {
+  from { background-color: hsl(var(--accent)); }
+  to { background-color: transparent; }
+}
+
+.highlight {
+  animation: highlight-bg 2.5s ease-out;
+}
