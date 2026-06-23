@@ -56,6 +56,7 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, runTransaction, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { LOGO_BASE64 } from "@/lib/logo-base64";
 import { Badge } from "../ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { errorEmitter } from "@/lib/error-emitter";
@@ -110,24 +111,8 @@ const downloadPDF = async (po: PurchaseOrder, quotes: Quote[]) => {
     const pageWidth = doc.internal.pageSize.width;
     const pageMargin = 14;
 
-    let logoDataUrl: string | null = null;
-    try {
-        const logoUrl = 'https://res.cloudinary.com/ddbgqzdpj/image/upload/v1772466958/WhatsApp_Image_2026-02-27_at_1.26.01_PM_aq5j1w.jpg';
-        const response = await fetch(logoUrl);
-        const blob = await response.blob();
-        logoDataUrl = await new Promise<string>(resolve => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-        });
-    } catch (error) {
-        console.error("Error loading logo for PDF:", error);
-    }
-    
     // Header
-    if (logoDataUrl) {
-        doc.addImage(logoDataUrl, 'PNG', pageMargin, 12, 20, 15);
-    }
+    doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 12, 26.6, 15);
     
     doc.setFont("helvetica", "bold").setFontSize(14).setTextColor(0, 0, 0);
     doc.text("ORDEN DE COMPRA", pageWidth - pageMargin, 20, { align: 'right' });

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
+import { LOGO_BASE64 } from "@/lib/logo-base64";
 import { doc, updateDoc } from "firebase/firestore";
 import { Download, ChevronDown } from "lucide-react";
 import jsPDF from "jspdf";
@@ -30,26 +31,8 @@ const downloadServiceOrderPDF = async (ticket: Ticket) => {
     const pageMargin = 14;
     const bottomMargin = 50;
 
-    let logoDataUrl: string | null = null;
-    try {
-        const logoUrl = 'https://res.cloudinary.com/ddbgqzdpj/image/upload/v1771958796/logo-Photoroom_klbk3u.png';
-        const response = await fetch(logoUrl);
-        const blob = await response.blob();
-        logoDataUrl = await new Promise<string>(resolve => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-        });
-    } catch (error) {
-        console.error("Error loading logo for PDF:", error);
-    }
-
     const drawHeader = () => {
-        if (logoDataUrl) {
-            doc.addImage(logoDataUrl, 'PNG', pageMargin, 8, 40, 15);
-        } else {
-            doc.setFont("helvetica", "bold").setFontSize(20).text("LEBAREF", pageMargin, 15);
-        }
+        doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 8, 26.6, 15);
         
         doc.setFont("helvetica", "normal").setFontSize(10).text("Orden de Servicio", pageMargin, 15 + 5);
         doc.setFont("helvetica", "bold").setFontSize(12).text(`Orden #${ticketId}`, pageWidth - pageMargin, 15, { align: 'right' });

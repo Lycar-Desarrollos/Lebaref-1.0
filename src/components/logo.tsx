@@ -20,10 +20,11 @@ export function Logo({
       aria-label="LEBAREF Home"
     >
       <Image
-        src="https://res.cloudinary.com/ddbgqzdpj/image/upload/v1771961790/logo-Photoroom_1_rpqv3n.png"
+        src="/logo.png"
         alt="LEBAREF Logo"
         width={width}
         height={height}
+        className="object-contain"
         priority
       />
     </Link>

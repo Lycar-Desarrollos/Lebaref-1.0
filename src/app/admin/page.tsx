@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where, orderBy, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { LOGO_BASE64 } from "@/lib/logo-base64";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, FileText, ShoppingCart, List, Loader2, Download, FileSpreadsheet } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -86,24 +87,8 @@ const downloadQuotePDF = async (quote: Quote) => {
     const topMargin = 40;
     let lastDrawnPage = 1;
 
-    let logoDataUrl: string | null = null;
-    try {
-        const logoUrl = 'https://res.cloudinary.com/ddbgqzdpj/image/upload/v1772466958/WhatsApp_Image_2026-02-27_at_1.26.01_PM_aq5j1w.jpg';
-        const response = await fetch(logoUrl);
-        const blob = await response.blob();
-        logoDataUrl = await new Promise<string>(resolve => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-        });
-    } catch (error) {
-        console.error("Error loading logo for PDF:", error);
-    }
-    
     const drawHeader = () => {
-        if (logoDataUrl) {
-            doc.addImage(logoDataUrl, 'PNG', pageMargin, 12, 20, 15);
-        }
+        doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 5, 45, 25.3);
         
         const headerDetailsX = pageWidth - pageMargin;
         doc.setFont("helvetica", "bold");
@@ -115,7 +100,7 @@ const downloadQuotePDF = async (quote: Quote) => {
         doc.text(`${quoteId}`, headerDetailsX, 20 + 4, { align: 'right' });
 
         doc.setDrawColor(221, 221, 221); 
-        doc.line(pageMargin, 30, pageWidth - pageMargin, 30);
+        doc.line(pageMargin, 32, pageWidth - pageMargin, 32);
         doc.setTextColor(0, 0, 0);
     };
 
@@ -146,7 +131,7 @@ const downloadQuotePDF = async (quote: Quote) => {
     ].join('\n');
 
     autoTable(doc, {
-        startY: 35,
+        startY: 37,
         head: [['DATOS DEL CLIENTE', 'DATOS DE LA COTIZACIÓN', 'CONTACTO LEBAREF']],
         body: [[clientInfo, quoteInfo, companyInfo]],
         theme: 'grid',

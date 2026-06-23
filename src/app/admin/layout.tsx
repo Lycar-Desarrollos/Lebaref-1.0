@@ -158,8 +158,8 @@ export default function AdminLayout({
         <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
         <div className="hidden border-r bg-muted/40 md:block">
             <div className="flex h-full max-h-screen flex-col gap-2">
-            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-                <Logo href="/admin" />
+            <div className="flex h-24 items-center border-b pl-4 pr-4 pt-2">
+                <Logo href="/admin" width={150} height={84} />
             </div>
             <div className="flex-1 overflow-auto py-2">
                 <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -193,8 +193,8 @@ export default function AdminLayout({
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="flex flex-col p-0">
-                        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-                            <Logo href="/admin" />
+                        <div className="flex h-24 items-center border-b pl-4 pr-4 pt-2">
+                            <Logo href="/admin" width={150} height={84} />
                         </div>
                         <nav className="grid gap-2 text-lg font-medium p-4">
                             {allNavLinks.map((link) => <NavLink key={link.href} link={link} isMobile={true} />)}
