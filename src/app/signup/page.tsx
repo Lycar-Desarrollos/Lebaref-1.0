@@ -150,7 +150,7 @@ export default function SignUpPage() {
         />
         <div className="absolute inset-0 bg-white/75" />
         <div className="relative z-10 mt-8 text-center">
-          <Logo className="justify-center" width={150} height={38} />
+          <Logo className="justify-center" width={320} height={180} />
         </div>
       </div>
     </div>
