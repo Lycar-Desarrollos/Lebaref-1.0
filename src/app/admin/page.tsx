@@ -88,7 +88,7 @@ const downloadQuotePDF = async (quote: Quote) => {
     let lastDrawnPage = 1;
 
     const drawHeader = () => {
-        doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 5, 45, 25.3);
+        doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 12, 26.6, 15);
         
         const headerDetailsX = pageWidth - pageMargin;
         doc.setFont("helvetica", "bold");
@@ -100,7 +100,7 @@ const downloadQuotePDF = async (quote: Quote) => {
         doc.text(`${quoteId}`, headerDetailsX, 20 + 4, { align: 'right' });
 
         doc.setDrawColor(221, 221, 221); 
-        doc.line(pageMargin, 32, pageWidth - pageMargin, 32);
+        doc.line(pageMargin, 30, pageWidth - pageMargin, 30);
         doc.setTextColor(0, 0, 0);
     };
 
@@ -131,7 +131,7 @@ const downloadQuotePDF = async (quote: Quote) => {
     ].join('\n');
 
     autoTable(doc, {
-        startY: 37,
+        startY: 35,
         head: [['DATOS DEL CLIENTE', 'DATOS DE LA COTIZACIÓN', 'CONTACTO LEBAREF']],
         body: [[clientInfo, quoteInfo, companyInfo]],
         theme: 'grid',
