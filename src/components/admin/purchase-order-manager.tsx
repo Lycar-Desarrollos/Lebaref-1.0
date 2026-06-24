@@ -112,7 +112,7 @@ const downloadPDF = async (po: PurchaseOrder, quotes: Quote[]) => {
     const pageMargin = 14;
 
     // Header
-    doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 12, 26.6, 15);
+    doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 5, 45, 25.3);
     
     doc.setFont("helvetica", "bold").setFontSize(14).setTextColor(0, 0, 0);
     doc.text("ORDEN DE COMPRA", pageWidth - pageMargin, 20, { align: 'right' });
@@ -135,7 +135,7 @@ const downloadPDF = async (po: PurchaseOrder, quotes: Quote[]) => {
             ]
         ],
         theme: 'plain',
-        startY: 40,
+        startY: 42,
         tableWidth: 'auto',
         margin: { left: pageMargin, right: pageMargin }
     });
