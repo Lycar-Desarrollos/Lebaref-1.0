@@ -1,5 +1,6 @@
 
 
+import { Suspense } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase } from "lucide-react";
 import { ProjectManager } from "@/components/admin/project-manager";
@@ -15,7 +16,13 @@ export default function ProjectsPage() {
                 <CardDescription>Crea, visualiza y gestiona todos los proyectos de tus clientes.</CardDescription>
             </CardHeader>
             <CardContent>
-                <ProjectManager />
+                <Suspense fallback={
+                    <div className="flex justify-center p-8">
+                        <Briefcase className="h-8 w-8 animate-pulse text-muted-foreground" />
+                    </div>
+                }>
+                    <ProjectManager />
+                </Suspense>
             </CardContent>
         </Card>
     )

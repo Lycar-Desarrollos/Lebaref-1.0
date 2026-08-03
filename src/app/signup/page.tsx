@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,11 +38,30 @@ export default function SignUpPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        phone: phone,
-        role: "user",
-        createdAt: new Date().toISOString(),
+      const userCounterRef = doc(db, "counters", "users");
+      const userDocRef = doc(db, "users", user.uid);
+
+      await runTransaction(db, async (transaction) => {
+        const counterDoc = await transaction.get(userCounterRef);
+        let newUserCodeNumber = 1;
+        if (counterDoc.exists() && counterDoc.data().lastNumber) {
+          newUserCodeNumber = counterDoc.data().lastNumber + 1;
+        }
+        
+        transaction.set(userCounterRef, { lastNumber: newUserCodeNumber }, { merge: true });
+
+        const userCode = String(newUserCodeNumber).padStart(2, '0');
+
+        transaction.set(userDocRef, {
+          uid: user.uid,
+          email: user.email,
+          phone: phone,
+          role: "user",
+          createdAt: serverTimestamp(),
+          userCode: userCode,
+          quoteCounter: 0,
+          purchaseOrderCounter: 0
+        });
       });
       
       router.push("/profile");

@@ -51,7 +51,7 @@ const quoteItemSchema = z.object({
 
 const quoteFormSchema = z.object({
   clientName: z.string().min(2, "El nombre del cliente es requerido."),
-  clientPhone: z.string().optional().or(z.literal('')),
+  clientPhone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos."),
   clientEmail: z.string().email({ message: "Correo inválido." }).optional().or(z.literal('')),
   clientAddress: z.string().min(1, "La dirección es requerida."),
   serviceAddress: z.string().optional().or(z.literal('')),
@@ -263,7 +263,7 @@ export function QuoteForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] lg:max-w-[1200px] p-0">
+      <DialogContent className="sm:max-w-4xl p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle>{quote?.id ? `Editar Cotización #${quoteIdDisplay}` : "Crear Nueva Cotización"}</DialogTitle>
           <DialogDescription>Complete los detalles para generar el documento de cotización.</DialogDescription>
@@ -351,7 +351,7 @@ export function QuoteForm({
                       <div className="flex flex-col gap-2">
                     <FormField name="clientPhone" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Teléfono del Cliente (Opcional)</FormLabel>
+                          <FormLabel>Teléfono del Cliente *</FormLabel>
                           <FormControl><Input {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>
@@ -378,6 +378,18 @@ export function QuoteForm({
                   <FormField name="rfc" control={form.control} render={({ field }) => (
                      <FormItem><FormLabel>RFC (Opcional)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
+                   <FormField name="clientAddress" control={form.control} render={({ field }) => (
+                      <FormItem className="lg:col-span-2"><FormLabel>Dirección Fiscal del Cliente</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                   <FormField name="serviceAddress" control={form.control} render={({ field }) => (
+                      <FormItem className="lg:col-span-2"><FormLabel>Dirección del Servicio (Lugar de ejecución)</FormLabel><FormControl><Input placeholder="Dejar vacío si es la misma que la fiscal" {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField name="date" control={form.control} render={({ field }) => (
+                    <FormItem><FormLabel>Fecha de Emisión</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField name="expirationDate" control={form.control} render={({ field }) => (
+                    <FormItem><FormLabel>Fecha de Vencimiento</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
                    <FormField name="status" control={form.control} render={({ field }) => (
                     <FormItem><FormLabel>Estado</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
@@ -391,18 +403,6 @@ export function QuoteForm({
                         </SelectContent>
                       </Select>
                     <FormMessage /></FormItem>
-                  )} />
-                   <FormField name="clientAddress" control={form.control} render={({ field }) => (
-                      <FormItem className="lg:col-span-3"><FormLabel>Dirección Fiscal del Cliente</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                   <FormField name="serviceAddress" control={form.control} render={({ field }) => (
-                      <FormItem className="lg:col-span-3"><FormLabel>Dirección del Servicio (Lugar de ejecución)</FormLabel><FormControl><Input placeholder="Dejar vacío si es la misma que la fiscal" {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                  <FormField name="date" control={form.control} render={({ field }) => (
-                    <FormItem><FormLabel>Fecha de Emisión</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                  <FormField name="expirationDate" control={form.control} render={({ field }) => (
-                    <FormItem><FormLabel>Fecha de Vencimiento</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                 </div>
               </div>
@@ -513,7 +513,7 @@ export function QuoteForm({
                   <FormField name="paymentTerms" control={form.control} render={({ field }) => (
                     <FormItem>
                         <FormLabel>Condiciones de Pago</FormLabel>
-                        <FormControl><Textarea className="min-h-[130px] resize-none" {...field} disabled={!isAdmin} /></FormControl>
+                        <FormControl><Textarea className="min-h-[100px]" {...field} disabled={!isAdmin} /></FormControl>
                         <FormMessage />
                     </FormItem>
                   )} />

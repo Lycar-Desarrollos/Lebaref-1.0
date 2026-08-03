@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Home, Briefcase, FileText, Users, ShoppingCart, Truck, User, LogOut, Menu, Wrench, Package, Calendar, AreaChart } from "lucide-react";
+import { Home, Briefcase, FileText, Users, ShoppingCart, Truck, User, LogOut, Menu, Wrench, Package, Calendar, AreaChart, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -101,6 +101,10 @@ export default function AdminLayout({
         { href: "/admin/reports", label: "Reportes", icon: AreaChart, id: "reports" }
     ].filter(link => hasAccess(link.id));
 
+    const cobranzaLinks = [
+        { href: "/admin/cuentas-por-cobrar", label: "Cuentas por Cobrar", icon: DollarSign, id: "quotes" },
+    ].filter(link => hasAccess(link.id));
+
     const adminControlLink = { href: "/admin/users", label: "Control de Usuarios", icon: User, id: "users" };
     
     const allNavLinks = [
@@ -108,6 +112,7 @@ export default function AdminLayout({
         ...salesLinks,
         ...purchasesLinks,
         ...warehouseLinks,
+        ...cobranzaLinks,
         ...toolsLinks,
         ...(hasAccess(adminControlLink.id) ? [adminControlLink] : [])
     ];
@@ -167,6 +172,7 @@ export default function AdminLayout({
                 <NavGroup title="Ventas" links={salesLinks} />
                 <NavGroup title="Compras" links={purchasesLinks} />
                 <NavGroup title="Almacenes" links={warehouseLinks} />
+                <NavGroup title="Cobranza" links={cobranzaLinks} />
                 <NavGroup title="Herramientas" links={toolsLinks} />
                 </nav>
             </div>

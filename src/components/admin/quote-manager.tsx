@@ -77,7 +77,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-
+import { useSearchParams } from "next/navigation";
 
 export type QuoteItem = {
   description: string;
@@ -142,6 +142,7 @@ export type Quote = {
   equipoLugar?: string;
   userId: string;
   history?: QuoteHistoryEntry[];
+  acceptedDate?: string;
 };
 
 type UserProfile = {
@@ -182,7 +183,7 @@ const createOrUpdateTicketFromQuote = async (quote: Quote, currentUserId: string
         const ticketRef = doc(db, "tickets", quote.linkedTicketId);
         const batch = writeBatch(db);
         batch.update(ticketRef, ticketData);
-        batch.update(quoteRef, { status: "Aceptada" });
+        batch.update(quoteRef, { status: "Aceptada", acceptedDate: new Date().toISOString().split('T')[0] });
         await batch.commit();
         return quote.linkedTicketId;
     } else {
@@ -198,7 +199,11 @@ const createOrUpdateTicketFromQuote = async (quote: Quote, currentUserId: string
             const newTicketRef = doc(collection(db, "tickets"));
             transaction.set(newTicketRef, { ...ticketData, ticketNumber: newTicketNumber });
             
-            transaction.update(quoteRef, { linkedTicketId: newTicketRef.id, status: 'Aceptada' });
+            transaction.update(quoteRef, { 
+                linkedTicketId: newTicketRef.id, 
+                status: 'Aceptada',
+                acceptedDate: new Date().toISOString().split('T')[0]
+            });
 
             return newTicketRef.id;
         });
@@ -216,7 +221,7 @@ const downloadPDF = async (quote: Quote) => {
     let lastDrawnPage = 1;
 
     const drawHeader = () => {
-        doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 12, 26.6, 15);
+        doc.addImage(LOGO_BASE64, 'PNG', pageMargin, 5, 45, 25.3);
         
         const headerDetailsX = pageWidth - pageMargin;
         doc.setFont("helvetica", "bold");
@@ -228,7 +233,7 @@ const downloadPDF = async (quote: Quote) => {
         doc.text(`${quoteId}`, headerDetailsX, 20 + 4, { align: 'right' });
 
         doc.setDrawColor(221, 221, 221); 
-        doc.line(pageMargin, 30, pageWidth - pageMargin, 30);
+        doc.line(pageMargin, 32, pageWidth - pageMargin, 32);
         doc.setTextColor(0, 0, 0);
     };
 
@@ -261,7 +266,7 @@ const downloadPDF = async (quote: Quote) => {
     ].filter(val => val !== null).join('\n');
 
     autoTable(doc, {
-        startY: 35,
+        startY: 37,
         head: [['DATOS DEL CLIENTE', 'DATOS DE LA COTIZACIÓN', 'CONTACTO LEBAREF']],
         body: [[clientInfo, quoteInfo, companyInfo]],
         theme: 'grid',
@@ -480,6 +485,9 @@ const downloadExcel = (quote: Quote) => {
 export function QuoteManager() {
   const { user, isLoading: authIsLoading } = useAuth();
   const [quotes, setQuotes] = useState<Quote[]>([]);
+  const searchParams = useSearchParams();
+  const highlightId = searchParams.get("id");
+
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -490,6 +498,19 @@ export function QuoteManager() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [date, setDate] = useState<DateRange | undefined>(undefined);
+
+  useEffect(() => {
+    if (highlightId && quotes.length > 0) {
+      const quote = quotes.find(q => q.id === highlightId);
+      if (quote) {
+        setSelectedQuote(quote);
+        setIsFormOpen(true);
+        // Clean URL params so it doesn't pop up again
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+  }, [highlightId, quotes]);
 
   useEffect(() => {
     if (authIsLoading) return;

@@ -27,7 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { Loader2, MessageSquare, UserPlus, Check, ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; 
 import { addDoc, collection, serverTimestamp, runTransaction, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Input } from "../ui/input";

@@ -31,6 +31,7 @@ graph TD
         subgraph VENTAS ["MODULO VENTAS"]
             V1["Clientes\nCRUD Completo + Sucursales\n+ Facturacion + Contactos"]
             V2["Cotizaciones\nCrear, Editar, Eliminar"]
+            V3["Cuentas por Cobrar\nSaldos y Créditos"]
         end
 
         subgraph COMPRAS ["MODULO COMPRAS"]
@@ -98,6 +99,7 @@ graph LR
         OK12["Control de Usuarios\nCrear con permisos"]
         OK13["Permisos por Modulo\nAdmin vs Empleado"]
         OK14["Reglas de Seguridad\nFirestore Rules"]
+        OK15["Cuentas por Cobrar\nSaldos y Abonos"]
     end
 
     subgraph PENDIENTE ["PENDIENTE DE VALIDAR"]
@@ -150,6 +152,7 @@ graph LR
     A["Vendedor registra\nun CLIENTE nuevo"] --> B["Crea una\nCOTIZACION\npara ese cliente"]
     B --> C["El cliente\nAPRUEBA"]
     C --> D["Se crea un\nPROYECTO"]
+    C --> CXC["Se genera saldo en\nCUENTAS POR COBRAR"]
     D --> E["Se generan\nORDENES DE COMPRA\na proveedores"]
     E --> F["Se asignan\nSERVICIOS y\nREFACCIONES"]
     F --> G["Se da seguimiento\nen el CALENDARIO"]
@@ -158,6 +161,7 @@ graph LR
     style A fill:#1e293b,stroke:#3b82f6,color:#fff
     style B fill:#1e293b,stroke:#3b82f6,color:#fff
     style C fill:#064e3b,stroke:#10b981,color:#fff
+    style CXC fill:#1e293b,stroke:#3b82f6,color:#fff
     style D fill:#1e293b,stroke:#3b82f6,color:#fff
     style E fill:#1e293b,stroke:#3b82f6,color:#fff
     style F fill:#1e293b,stroke:#3b82f6,color:#fff

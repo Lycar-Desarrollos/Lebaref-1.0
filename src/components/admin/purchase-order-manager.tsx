@@ -667,6 +667,8 @@ export function PurchaseOrderManager() {
             {(filter || date || table.getColumn('status')?.getFilterValue()) && (
                 <TooltipProvider>
                     <Tooltip>
+                       
+                       
                         <TooltipTrigger asChild>
                             <Button
                                 variant="ghost"

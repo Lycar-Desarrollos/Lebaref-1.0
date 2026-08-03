@@ -1,5 +1,6 @@
 
 
+import { Suspense } from "react";
 import { QuoteManager } from "@/components/admin/quote-manager";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText } from "lucide-react";
@@ -15,7 +16,13 @@ export default function QuotesPage() {
                 <CardDescription>Crear, ver, editar y eliminar cotizaciones para los clientes.</CardDescription>
             </CardHeader>
             <CardContent>
-                <QuoteManager />
+                <Suspense fallback={
+                    <div className="flex justify-center p-8">
+                        <FileText className="h-8 w-8 animate-pulse text-muted-foreground" />
+                    </div>
+                }>
+                    <QuoteManager />
+                </Suspense>
             </CardContent>
         </Card>
     )

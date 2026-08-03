@@ -52,7 +52,7 @@ erDiagram
         string userId FK "Creador"
         string clientId FK "Cliente asociado"
         string quoteNumber "Numero correlativo"
-        string status "Borrador o Enviada o Aprobada"
+        string status "Borrador o Enviada o Aprobada o Pagada"
         array items "Partidas"
         number total "Total"
         timestamp createdAt "Fecha de creacion"

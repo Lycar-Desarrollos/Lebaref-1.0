@@ -50,7 +50,7 @@ service cloud.firestore {
 
     match /quotes/{quoteId} {
       allow create: if (hasPermission('quotes') || isAdmin()) && request.resource.data.userId == request.auth.uid;
-      allow list: if hasPermission('quotes') || hasPermission('projects') || hasPermission('reports') || isAdmin();
+      allow list: if hasPermission('quotes') || hasPermission('projects') || hasPermission('reports') || hasPermission('accounts_receivable') || isAdmin();
       allow get: if isAdmin() || resource.data.userId == request.auth.uid;
       allow update, delete: if isAdmin() || resource.data.userId == request.auth.uid;
     }
@@ -83,12 +83,12 @@ service cloud.firestore {
 
     // Restricted collections
     match /clients/{docId} {
-      allow read: if canRead('clients') || hasPermission('quotes');
+      allow read: if canRead('clients') || hasPermission('quotes') || hasPermission('accounts_receivable');
       allow create, update: if isAdmin() || hasPermission('clients');
       allow delete: if isAdmin();
     }
     match /clients {
-        allow list: if canRead('clients') || hasPermission('quotes');
+        allow list: if canRead('clients') || hasPermission('quotes') || hasPermission('accounts_receivable');
     }
     
     match /suppliers/{docId} {

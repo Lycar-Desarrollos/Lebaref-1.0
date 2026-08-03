@@ -54,7 +54,7 @@ const poFormSchema = z.object({
   supplierDetails: z.string().min(1, "Los detalles del proveedor son requeridos."),
   billToDetails: z.string().min(1, "Los detalles de facturación son requeridos."),
   date: z.string().min(1, "La fecha es requerida."),
-  status: z.enum(["Borrador", "Enviada", "Recibida Parcialmente", "Recibida"]),
+  status: z.enum(["Borrador", "Enviada", "Recibida Parcialmente", "Recibida"]), 
   items: z.array(poItemSchema).min(1, "Debe agregar al menos un ítem."),
   quoteId: z.string().optional(),
   tipoPago: z.string().optional(),

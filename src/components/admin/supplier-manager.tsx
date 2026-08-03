@@ -73,7 +73,7 @@ const supplierSchema = z.object({
 }, {
     message: "Los días de crédito son requeridos si se ofrece crédito.",
     path: ["creditTime"],
-});
+}); 
 
 
 export type Supplier = z.infer<typeof supplierSchema> & { id: string, createdAt: any };

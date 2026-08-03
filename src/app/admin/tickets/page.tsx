@@ -2,11 +2,12 @@
 "use client";
 
 import { useState } from "react";
+import { Suspense } from "react";
 import { TicketTable } from "@/components/admin/ticket-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { PlusCircle, Ticket } from "lucide-react";
+import { PlusCircle, Ticket, Loader2 } from "lucide-react";
 import { TicketForm } from "@/components/forms/ticket-form";
 
 export default function TicketsPage() {
@@ -41,7 +42,13 @@ export default function TicketsPage() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 max-h-[80vh] overflow-y-auto px-2">
-                        <TicketForm onTicketCreated={() => setIsFormOpen(false)} isAdminMode={true} />
+                        <Suspense fallback={
+                            <div className="flex justify-center p-4">
+                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                            </div>
+                        }>
+                            <TicketForm onTicketCreated={() => setIsFormOpen(false)} isAdminMode={true} />
+                        </Suspense>
                     </div>
                 </DialogContent>
             </Dialog>
