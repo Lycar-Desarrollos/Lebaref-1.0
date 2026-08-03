@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Home, Briefcase, FileText, Users, ShoppingCart, Truck, User, LogOut, Menu, Wrench, Package, Calendar, AreaChart, DollarSign } from "lucide-react";
+import { Home, Briefcase, FileText, Users, ShoppingCart, Truck, User, LogOut, Menu, Wrench, Package, Calendar, AreaChart, DollarSign, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -85,6 +85,10 @@ export default function AdminLayout({
         { href: "/admin/quotes", label: "Cotizaciones", icon: FileText, id: "quotes" },
         { href: "/admin/clients", label: "Clientes", icon: Users, id: "clients" },
     ].filter(link => hasAccess(link.id));
+
+    const operacionesLinks = [
+        { href: "/admin/operaciones/ordenes-de-trabajo", label: "Órdenes de Trabajo", icon: ClipboardList, id: "work_orders" },
+    ].filter(link => hasAccess(link.id));
     
     const purchasesLinks = [
         { href: "/admin/purchase-orders", label: "Órdenes de Compra", icon: ShoppingCart, id: "purchase_orders" },
@@ -110,6 +114,7 @@ export default function AdminLayout({
     const allNavLinks = [
         ...mainLinks,
         ...salesLinks,
+        ...operacionesLinks,
         ...purchasesLinks,
         ...warehouseLinks,
         ...cobranzaLinks,
@@ -170,6 +175,7 @@ export default function AdminLayout({
                 <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                 {mainLinks.map((link) => <NavLink key={link.href} link={link} />)}
                 <NavGroup title="Ventas" links={salesLinks} />
+                <NavGroup title="Operaciones" links={operacionesLinks} />
                 <NavGroup title="Compras" links={purchasesLinks} />
                 <NavGroup title="Almacenes" links={warehouseLinks} />
                 <NavGroup title="Cobranza" links={cobranzaLinks} />

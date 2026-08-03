@@ -79,6 +79,7 @@ const modules = [
     { id: 'suppliers', label: 'Proveedores' },
     { id: 'services', label: 'Servicios' },
     { id: 'spare_parts', label: 'Refacciones' },
+    { id: 'work_orders', label: 'Órdenes de Trabajo' },
     { id: 'calendar', label: 'Calendario' },
     { id: 'reports', label: 'Reportes' },
 ] as const;

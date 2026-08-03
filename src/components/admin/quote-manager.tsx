@@ -176,18 +176,53 @@ const createOrUpdateTicketFromQuote = async (quote: Quote, currentUserId: string
       userId: currentUserId,
       quoteId: quote.id,
     };
+
+    // Datos de la OT (sin precios)
+    const otItems = (quote.items || []).map(i => ({
+      description: i.description,
+      quantity: i.quantity,
+      unidad: i.unidad || 'PZA',
+    }));
   
     const quoteRef = doc(db, "quotes", quote.id);
 
     if (quote.linkedTicketId) {
+        // Ya existe ticket: actualizar ticket y crear OT en transacción
         const ticketRef = doc(db, "tickets", quote.linkedTicketId);
-        const batch = writeBatch(db);
-        batch.update(ticketRef, ticketData);
-        batch.update(quoteRef, { status: "Aceptada", acceptedDate: new Date().toISOString().split('T')[0] });
-        await batch.commit();
-        return quote.linkedTicketId;
+        return await runTransaction(db, async (transaction) => {
+            const otCounterRef = doc(db, "counters", "work_orders");
+            const otCounterDoc = await transaction.get(otCounterRef);
+            const newOtNumber = (otCounterDoc.exists() ? otCounterDoc.data().lastNumber : 0) + 1;
+            transaction.set(otCounterRef, { lastNumber: newOtNumber }, { merge: true });
+
+            const newOtRef = doc(collection(db, "ordenes_de_trabajo"));
+            transaction.set(newOtRef, {
+                otNumber: `OT-${String(newOtNumber).padStart(4, '0')}`,
+                quoteId: quote.id,
+                quoteNumber: quote.quoteNumber,
+                clientName: quote.clientName,
+                clientPhone: quote.clientPhone,
+                clientAddress: quote.serviceAddress || quote.clientAddress,
+                serviceAddress: quote.serviceAddress || '',
+                responsable: quote.responsable || '',
+                date: new Date().toISOString().split('T')[0],
+                tipoServicio: quote.tipoServicio || '',
+                tipoTrabajo: quote.tipoTrabajo || '',
+                equipoLugar: quote.equipoLugar || '',
+                observations: quote.observations || '',
+                items: otItems,
+                status: 'Pendiente',
+                technician: '',
+                userId: currentUserId,
+                createdAt: serverTimestamp(),
+            });
+            transaction.update(ticketRef, ticketData);
+            transaction.update(quoteRef, { status: "Aceptada", acceptedDate: new Date().toISOString().split('T')[0] });
+            return quote.linkedTicketId;
+        });
     } else {
         return await runTransaction(db, async (transaction) => {
+            // Counter tickets
             const counterRef = doc(db, "counters", "tickets");
             const counterDoc = await transaction.get(counterRef);
             let newTicketNumber = 1;
@@ -196,8 +231,38 @@ const createOrUpdateTicketFromQuote = async (quote: Quote, currentUserId: string
             }
             transaction.set(counterRef, { lastNumber: newTicketNumber }, { merge: true });
 
+            // Counter OT
+            const otCounterRef = doc(db, "counters", "work_orders");
+            const otCounterDoc = await transaction.get(otCounterRef);
+            const newOtNumber = (otCounterDoc.exists() ? otCounterDoc.data().lastNumber : 0) + 1;
+            transaction.set(otCounterRef, { lastNumber: newOtNumber }, { merge: true });
+
+            // Nuevo ticket
             const newTicketRef = doc(collection(db, "tickets"));
             transaction.set(newTicketRef, { ...ticketData, ticketNumber: newTicketNumber });
+
+            // Nueva OT
+            const newOtRef = doc(collection(db, "ordenes_de_trabajo"));
+            transaction.set(newOtRef, {
+                otNumber: `OT-${String(newOtNumber).padStart(4, '0')}`,
+                quoteId: quote.id,
+                quoteNumber: quote.quoteNumber,
+                clientName: quote.clientName,
+                clientPhone: quote.clientPhone,
+                clientAddress: quote.serviceAddress || quote.clientAddress,
+                serviceAddress: quote.serviceAddress || '',
+                responsable: quote.responsable || '',
+                date: new Date().toISOString().split('T')[0],
+                tipoServicio: quote.tipoServicio || '',
+                tipoTrabajo: quote.tipoTrabajo || '',
+                equipoLugar: quote.equipoLugar || '',
+                observations: quote.observations || '',
+                items: otItems,
+                status: 'Pendiente',
+                technician: '',
+                userId: currentUserId,
+                createdAt: serverTimestamp(),
+            });
             
             transaction.update(quoteRef, { 
                 linkedTicketId: newTicketRef.id, 
@@ -898,7 +963,7 @@ export function QuoteManager() {
                     </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
-            {(filter || date || table.getColumn('status')?.getFilterValue()) && (
+            {(Boolean(filter) || Boolean(date) || Boolean(table.getColumn('status')?.getFilterValue())) && (
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>

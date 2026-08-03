@@ -103,8 +103,16 @@ service cloud.firestore {
     match /counters/{counterId} {
       allow read, write: if request.auth != null && (
         (counterId == 'users' && isAdmin()) ||
-        (counterId == 'tickets')
+        (counterId == 'tickets') ||
+        (counterId == 'work_orders' && (isAdmin() || hasPermission('work_orders') || hasPermission('quotes')))
       );
+    }
+
+    match /ordenes_de_trabajo/{otId} {
+      allow create: if (isAdmin() || hasPermission('work_orders') || hasPermission('quotes')) && request.resource.data.userId == request.auth.uid;
+      allow list: if isAdmin() || hasPermission('work_orders') || hasPermission('quotes');
+      allow get: if isAdmin() || resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.userId == request.auth.uid;
     }
   }
 }
