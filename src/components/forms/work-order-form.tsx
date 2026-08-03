@@ -191,7 +191,7 @@ export function WorkOrderForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl p-0">
+      <DialogContent className="sm:max-w-6xl p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle>{workOrder?.id ? `Editar Orden de Trabajo — ${otLabel}` : "Crear Nueva Orden de Trabajo"}</DialogTitle>
           <DialogDescription>
@@ -203,7 +203,7 @@ export function WorkOrderForm({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-            <div className="space-y-6 px-6 overflow-y-auto max-h-[calc(80vh-150px)]">
+            <div className="space-y-6 px-6 overflow-y-auto max-h-[calc(85vh-120px)]">
 
               {/* Información General */}
               <div className="border p-4 rounded-lg">
@@ -264,11 +264,11 @@ export function WorkOrderForm({
                   )} />
 
                   <FormField name="clientAddress" control={form.control} render={({ field }) => (
-                    <FormItem className="lg:col-span-2"><FormLabel>Dirección del Cliente *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem className="lg:col-span-3"><FormLabel>Dirección del Cliente *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
 
                   <FormField name="serviceAddress" control={form.control} render={({ field }) => (
-                    <FormItem className="lg:col-span-2"><FormLabel>Dirección del Servicio (Lugar de ejecución)</FormLabel><FormControl><Input placeholder="Dejar vacío si es la misma" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem className="lg:col-span-3"><FormLabel>Dirección del Servicio (Lugar de ejecución)</FormLabel><FormControl><Input placeholder="Dejar vacío si es la misma" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
 
                   <FormField name="date" control={form.control} render={({ field }) => (

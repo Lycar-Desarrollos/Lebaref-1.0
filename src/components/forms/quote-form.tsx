@@ -260,17 +260,16 @@ export function QuoteForm({
 
   const quoteIdDisplay = quote?.quoteNumber ? `C01-${String(quote.quoteNumber).padStart(4, '0')}` : "Nueva Cotización";
 
-
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl p-0">
+      <DialogContent className="sm:max-w-6xl p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle>{quote?.id ? `Editar Cotización #${quoteIdDisplay}` : "Crear Nueva Cotización"}</DialogTitle>
           <DialogDescription>Complete los detalles para generar el documento de cotización.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-            <div className="space-y-6 px-6 overflow-y-auto max-h-[calc(80vh-150px)]">
+            <div className="space-y-6 px-6 overflow-y-auto max-h-[calc(85vh-120px)]">
             
               {/* Client and Date Info */}
               <div className="border p-4 rounded-lg">
@@ -346,12 +345,12 @@ export function QuoteForm({
                         </Popover>
                          <FormMessage />
                          </FormItem>
-                     )}
-                     />
+                      )}
+                      />
                       <div className="flex flex-col gap-2">
                     <FormField name="clientPhone" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Teléfono del Cliente *</FormLabel>
+                          <FormLabel>Teléfono del Cliente (Opcional)</FormLabel>
                           <FormControl><Input {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>
@@ -378,19 +377,7 @@ export function QuoteForm({
                   <FormField name="rfc" control={form.control} render={({ field }) => (
                      <FormItem><FormLabel>RFC (Opcional)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
-                   <FormField name="clientAddress" control={form.control} render={({ field }) => (
-                      <FormItem className="lg:col-span-2"><FormLabel>Dirección Fiscal del Cliente</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                   <FormField name="serviceAddress" control={form.control} render={({ field }) => (
-                      <FormItem className="lg:col-span-2"><FormLabel>Dirección del Servicio (Lugar de ejecución)</FormLabel><FormControl><Input placeholder="Dejar vacío si es la misma que la fiscal" {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                  <FormField name="date" control={form.control} render={({ field }) => (
-                    <FormItem><FormLabel>Fecha de Emisión</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                  <FormField name="expirationDate" control={form.control} render={({ field }) => (
-                    <FormItem><FormLabel>Fecha de Vencimiento</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                   <FormField name="status" control={form.control} render={({ field }) => (
+                  <FormField name="status" control={form.control} render={({ field }) => (
                     <FormItem><FormLabel>Estado</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
@@ -403,6 +390,18 @@ export function QuoteForm({
                         </SelectContent>
                       </Select>
                     <FormMessage /></FormItem>
+                  )} />
+                   <FormField name="clientAddress" control={form.control} render={({ field }) => (
+                      <FormItem className="lg:col-span-3"><FormLabel>Dirección Fiscal del Cliente</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                   <FormField name="serviceAddress" control={form.control} render={({ field }) => (
+                      <FormItem className="lg:col-span-3"><FormLabel>Dirección del Servicio (Lugar de ejecución)</FormLabel><FormControl><Input placeholder="Dejar vacío si es la misma que la fiscal" {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField name="date" control={form.control} render={({ field }) => (
+                    <FormItem><FormLabel>Fecha de Emisión</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField name="expirationDate" control={form.control} render={({ field }) => (
+                    <FormItem><FormLabel>Fecha de Vencimiento</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                 </div>
               </div>
